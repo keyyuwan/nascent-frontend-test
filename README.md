@@ -66,6 +66,14 @@ npm start
 http://localhost:3000
 ```
 
+## Tests
+
+You can run the tests with:
+
+```bash
+npm test
+```
+
 ## About the Template
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
