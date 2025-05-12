@@ -5,8 +5,6 @@ export function calculateSpread(asks: Array<string[]>, bids: Array<string[]>) {
   const highestBid = Number.parseFloat(bids[0][0])
 
   const spread = highestBid - lowestAsk
-  console.log({ lowestAsk })
-  console.log({ highestBid })
 
   return formatToUSD(String(spread))
 }
