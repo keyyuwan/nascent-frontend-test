@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { unmaskUSD } from '../utils/unmask-usd'
 import { formatToUSD } from '../utils/format-to-usd'
+import { useOrderEntryStore } from '../store/order-entry/use-order-entry-store'
 
 const limitOrderFormSchema = z.object({
   price: z
@@ -28,6 +29,7 @@ const limitOrderFormSchema = z.object({
 export type LimitOrderFormData = z.infer<typeof limitOrderFormSchema>
 
 export function useLimitOrderForm() {
+  const { orderEntry } = useOrderEntryStore()
   const form = useForm<LimitOrderFormData>({
     resolver: zodResolver(limitOrderFormSchema),
     defaultValues: {
@@ -50,6 +52,16 @@ export function useLimitOrderForm() {
       form.trigger(['amount', 'total'])
     }
   }, [amount, price, form])
+
+  useEffect(() => {
+    if (orderEntry?.limitPrice) {
+      form.setValue('price', orderEntry.limitPrice)
+    }
+  }, [orderEntry?.limitPrice, form])
+
+  useEffect(() => {
+    form.reset()
+  }, [form])
 
   function handleSlideChange(value: number) {
     form.setValue('amount', value)

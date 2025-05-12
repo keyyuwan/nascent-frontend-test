@@ -1,6 +1,8 @@
 import { TableCell, TableRow } from "../../../components/ui/table";
 import { useFormatOrderbookValues } from "../../../hooks/use-format-orderbook-values";
 import { useState } from "react";
+import { useOrderEntryStore } from "../../../store/order-entry/use-order-entry-store";
+import { Check } from "lucide-react";
 
 interface OrderbookTableRowProps {
   side: string[];
@@ -10,8 +12,10 @@ interface OrderbookTableRowProps {
 export function OrderbookTableRow({ side, type }: OrderbookTableRowProps) {
   const [showOrderPlacementMessage, setShowOrderPlacementMessage] =
     useState(false);
+  const [showSuccessOnPriceFill, setShowSuccessOnPriceFill] = useState(false);
   const { amount, formattedNotional, formattedPrice } =
     useFormatOrderbookValues(side);
+  const { setOrderEntry } = useOrderEntryStore();
 
   function handleShowOrderPlacementMessage() {
     setShowOrderPlacementMessage(true);
@@ -19,6 +23,17 @@ export function OrderbookTableRow({ side, type }: OrderbookTableRowProps) {
 
   function handleHideOrderPlacementMessage() {
     setShowOrderPlacementMessage(false);
+  }
+
+  function handleSetLimitPrice() {
+    setOrderEntry({
+      side: type === "ask" ? "sell" : "buy",
+      limitPrice: formattedPrice,
+    });
+    setShowSuccessOnPriceFill(true);
+    setTimeout(() => {
+      setShowSuccessOnPriceFill(false);
+    }, 3000);
   }
 
   return (
@@ -32,12 +47,17 @@ export function OrderbookTableRow({ side, type }: OrderbookTableRowProps) {
           className="hover:font-semibold"
           onMouseEnter={handleShowOrderPlacementMessage}
           onMouseLeave={handleHideOrderPlacementMessage}
+          onClick={handleSetLimitPrice}
         >
           {formattedPrice}
         </button>
         {showOrderPlacementMessage && (
           <span className="inline-block ml-2 text-xs text-zinc-500">
-            Use this price
+            {showSuccessOnPriceFill ? (
+              <Check className="size-4 text-emerald-500" />
+            ) : (
+              "Use this price"
+            )}
           </span>
         )}
       </TableCell>

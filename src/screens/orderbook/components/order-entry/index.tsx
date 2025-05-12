@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Tabs,
   TabsContent,
@@ -8,13 +8,21 @@ import {
 import { LimitOrderForm } from "./limit-order-form";
 import type { Asset } from "../../../../utils/assets-images";
 import { MarketOrderForm } from "./market-order-form";
+import { useOrderEntryStore } from "../../../../store/order-entry/use-order-entry-store";
 
 interface OrderEntryProps {
   asset: Asset;
 }
 
 export function OrderEntry({ asset }: OrderEntryProps) {
+  const { orderEntry } = useOrderEntryStore();
   const [side, setSide] = useState<"buy" | "sell">("buy");
+
+  useEffect(() => {
+    if (orderEntry?.side) {
+      setSide(orderEntry.side);
+    }
+  }, [orderEntry?.side]);
 
   function handleToggleSide(selectedSide: "buy" | "sell") {
     setSide(selectedSide);
