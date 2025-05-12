@@ -41,11 +41,6 @@ export function useLimitOrderForm() {
 
   const amount = form.watch('amount')
   const price = form.watch('price')
-  const total = form.watch('total')
-
-  // price & amount -> calculate notional
-  // amount & notional -> calculate price
-  // price & notional -> calculate amount
 
   useEffect(() => {
     const notional = Number(amount) * unmaskUSD(price)
@@ -57,17 +52,6 @@ export function useLimitOrderForm() {
       form.trigger(['amount', 'total'])
     }
   }, [amount, price, form])
-
-  // useEffect(() => {
-  //   const notional = amount * unmaskUSD(price)
-  //   const formattedNotional = formatToUSD(String(notional))
-
-  //   form.setValue('total', formattedNotional)
-
-  //   if (amount > 0) {
-  //     form.trigger(['amount', 'total'])
-  //   }
-  // }, [amount, total, form])
 
   useEffect(() => {
     if (orderEntry?.limitPrice) {
