@@ -38,7 +38,7 @@ export function LimitOrderForm({ asset, side }: LimitOrderFormProps) {
       await placeOrderFn({
         asset,
         side,
-        quantity: data.amount,
+        quantity: Number(data.amount),
         type: "limit",
         notional: unmaskUSD(data.total),
         price: unmaskUSD(data.price),
@@ -102,7 +102,7 @@ export function LimitOrderForm({ asset, side }: LimitOrderFormProps) {
             max={1}
             step={0.01}
             className="mt-2"
-            value={[amount]}
+            value={[Number(amount)]}
             onValueChange={(value) => handleSlideChange(value[0])}
           />
         </div>

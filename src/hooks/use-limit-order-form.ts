@@ -14,9 +14,9 @@ const limitOrderFormSchema = z.object({
       const formattedPrice = unmaskUSD(price)
       return formattedPrice > 0
     }, 'Please enter a valid price greater than $0.00.'),
-  amount: z.number().refine(amount => {
-    return amount > 0
-  }, 'Please enter a valid amount greater than 0.'),
+  amount: z.string().refine(amount => {
+    return Number(amount) > 0 && Number(amount) <= 1
+  }, 'Please enter a valid amount greater than 0 and lower or equal than 1.'),
   total: z
     .string()
     .min(1, 'Total is required')
@@ -33,7 +33,7 @@ export function useLimitOrderForm() {
   const form = useForm<LimitOrderFormData>({
     resolver: zodResolver(limitOrderFormSchema),
     defaultValues: {
-      amount: 0,
+      amount: '0',
       price: '$0.00',
       total: '$0.00',
     },
@@ -41,17 +41,33 @@ export function useLimitOrderForm() {
 
   const amount = form.watch('amount')
   const price = form.watch('price')
+  const total = form.watch('total')
+
+  // price & amount -> calculate notional
+  // amount & notional -> calculate price
+  // price & notional -> calculate amount
 
   useEffect(() => {
-    const notional = amount * unmaskUSD(price)
+    const notional = Number(amount) * unmaskUSD(price)
     const formattedNotional = formatToUSD(String(notional))
 
     form.setValue('total', formattedNotional)
 
-    if (amount > 0) {
+    if (Number(amount) > 0) {
       form.trigger(['amount', 'total'])
     }
   }, [amount, price, form])
+
+  // useEffect(() => {
+  //   const notional = amount * unmaskUSD(price)
+  //   const formattedNotional = formatToUSD(String(notional))
+
+  //   form.setValue('total', formattedNotional)
+
+  //   if (amount > 0) {
+  //     form.trigger(['amount', 'total'])
+  //   }
+  // }, [amount, total, form])
 
   useEffect(() => {
     if (orderEntry?.limitPrice) {
@@ -64,7 +80,7 @@ export function useLimitOrderForm() {
   }, [form])
 
   function handleSlideChange(value: number) {
-    form.setValue('amount', value)
+    form.setValue('amount', String(value))
   }
 
   return {
