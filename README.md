@@ -46,6 +46,26 @@ In addition to being highly productive with Tailwind CSS, I used it because Shad
 
 I used React Router to manage application routes and navigation. It’s a well-established solution that offered the flexibility I needed for client-side routing.
 
+## How to Run
+
+### 1. Install the dependencies
+
+```bash
+npm install
+```
+
+### 2. Start Web & Server
+
+```bash
+npm start
+```
+
+### 3. Access the app
+
+```bash
+http://localhost:3000
+```
+
 ## About the Template
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
